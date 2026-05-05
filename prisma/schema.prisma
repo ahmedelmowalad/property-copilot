@@ -1,0 +1,179 @@
+// Property Copilot — Prisma Schema
+// SQLite for MVP; portable to Postgres/Supabase (change provider + DATABASE_URL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  role        String   @default("PropertyManager")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  properties  Property[]
+}
+
+model Property {
+  id           String   @id @default(cuid())
+  ownerUserId  String?
+  owner        User?    @relation(fields: [ownerUserId], references: [id])
+  name         String
+  address      String
+  emirate      String   @default("Dubai")
+  area         String
+  propertyType String   @default("Apartment")
+  status       String   @default("Active")
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  units        Unit[]
+  tickets      MaintenanceTicket[]
+  requests     Request[]
+}
+
+model Unit {
+  id           String   @id @default(cuid())
+  propertyId   String
+  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  unitNumber   String
+  bedrooms     Int      @default(1)
+  bathrooms    Int      @default(1)
+  rentAmount   Float    @default(0)
+  currency     String   @default("AED")
+  status       String   @default("Vacant")
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenants      Tenant[]
+  leases       Lease[]
+  tickets      MaintenanceTicket[]
+  requests     Request[]
+}
+
+model Tenant {
+  id               String   @id @default(cuid())
+  firstName        String
+  lastName         String
+  email            String?
+  phone            String?
+  preferredChannel String   @default("WebDashboard")
+  unitId           String?
+  unit             Unit?    @relation(fields: [unitId], references: [id])
+  status           String   @default("Active")
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  leases           Lease[]
+  tickets          MaintenanceTicket[]
+  requests         Request[]
+}
+
+model Lease {
+  id               String   @id @default(cuid())
+  tenantId         String
+  tenant           Tenant   @relation(fields: [tenantId], references: [id])
+  unitId           String
+  unit             Unit     @relation(fields: [unitId], references: [id])
+  startDate        DateTime
+  endDate          DateTime
+  rentAmount       Float
+  currency         String   @default("AED")
+  securityDeposit  Float    @default(0)
+  paymentFrequency String   @default("Annual")
+  status           String   @default("Active")
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model MaintenanceTicket {
+  id                  String    @id @default(cuid())
+  propertyId          String?
+  property            Property? @relation(fields: [propertyId], references: [id])
+  unitId              String?
+  unit                Unit?     @relation(fields: [unitId], references: [id])
+  tenantId            String?
+  tenant              Tenant?   @relation(fields: [tenantId], references: [id])
+  title               String
+  description         String?
+  category            String    @default("Maintenance")
+  urgency             String    @default("Medium")
+  status              String    @default("New")
+  sourceMessage       String?
+  aiSummary           String?
+  aiSuggestedResponse String?
+  assignedVendor      String?
+  vendorType          String?
+  dueDate             DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  activityLogs        ActivityLog[]
+  requests            Request[]
+}
+
+model Request {
+  id                    String             @id @default(cuid())
+  senderType            String             @default("Tenant")
+  senderName            String?
+  senderEmail           String?
+  senderPhone           String?
+  channel               String             @default("WebDashboard")
+  rawMessage            String
+  category              String?
+  urgency               String?
+  extractedSummary      String?
+  extractedDetailsJson  String?
+  suggestedActionsJson  String?
+  draftResponse         String?
+  complianceNotes       String?
+  relatedPropertyId     String?
+  relatedProperty       Property?          @relation(fields: [relatedPropertyId], references: [id])
+  relatedUnitId         String?
+  relatedUnit           Unit?              @relation(fields: [relatedUnitId], references: [id])
+  relatedTenantId       String?
+  relatedTenant         Tenant?            @relation(fields: [relatedTenantId], references: [id])
+  createdTicketId       String?
+  createdTicket         MaintenanceTicket? @relation(fields: [createdTicketId], references: [id])
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  agentRuns             AgentRun[]
+}
+
+model ActivityLog {
+  id          String    @id @default(cuid())
+  entityType  String
+  entityId    String
+  action      String
+  notes       String?
+  createdAt   DateTime  @default(now())
+
+  ticketId    String?
+  ticket      MaintenanceTicket? @relation(fields: [ticketId], references: [id])
+}
+
+model AgentRun {
+  id            String   @id @default(cuid())
+  requestId     String?
+  request       Request? @relation(fields: [requestId], references: [id])
+  provider      String
+  mode          String
+  promptVersion String   @default("v1")
+  inputJson     String?
+  outputJson    String?
+  status        String   @default("pending")
+  errorMessage  String?
+  createdAt     DateTime @default(now())
+}
