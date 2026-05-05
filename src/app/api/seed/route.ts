@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
 
-// This endpoint seeds demo data via the web — only for development/demo use
+// Seeds demo data — allowed when ALLOW_SEED=true or in development
 export async function POST() {
   if (process.env.NODE_ENV === 'production' && process.env.ALLOW_SEED !== 'true') {
-    return NextResponse.json({ error: 'Seed not allowed in production' }, { status: 403 })
+    return NextResponse.json({ error: 'Seed not allowed in production. Set ALLOW_SEED=true in Vercel env vars.' }, { status: 403 })
   }
 
   try {
