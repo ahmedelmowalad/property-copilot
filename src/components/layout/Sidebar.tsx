@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '⊞' },
   { href: '/dashboard/copilot', label: 'AI Copilot', icon: '✦', highlight: true },
+  { href: '/dashboard/agent', label: 'Tenant Agent', icon: '💬', highlight: true, badge: 'NEW' },
   { href: '/dashboard/properties', label: 'Properties', icon: '🏢' },
   { href: '/dashboard/units', label: 'Units', icon: '🚪' },
   { href: '/dashboard/tenants', label: 'Tenants', icon: '👥' },
@@ -14,12 +15,11 @@ const navItems = [
 ]
 
 const futureModules = [
-  { label: 'Tenant Support', status: 'Planned' },
   { label: 'Landlord Support', status: 'Planned' },
   { label: 'Buyer Support', status: 'Future' },
   { label: 'Seller Support', status: 'Future' },
   { label: 'Leasing', status: 'Planned' },
-  { label: 'WhatsApp Assistant', status: 'Planned' },
+  { label: 'WhatsApp Channel', status: 'Planned' },
   { label: 'ChatGPT Agent', status: 'Planned' },
 ]
 
@@ -55,7 +55,9 @@ export function Sidebar() {
           >
             <span className="text-base">{item.icon}</span>
             <span>{item.label}</span>
-            {item.highlight && (
+            {item.badge ? (
+              <span className="ml-auto text-xs bg-green-500 text-white px-1.5 py-0.5 rounded font-medium">{item.badge}</span>
+            ) : item.highlight && (
               <span className="ml-auto text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded font-medium">AI</span>
             )}
           </Link>
