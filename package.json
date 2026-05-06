@@ -3,14 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "prisma generate --schema=prisma/schema.sqlite.prisma && next dev",
-    "build": "prisma generate && next build",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "db:push": "prisma db push --schema=prisma/schema.sqlite.prisma",
-    "db:push:prod": "prisma db push",
-    "db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
-    "db:studio": "prisma studio --schema=prisma/schema.sqlite.prisma"
+    "lint": "eslint"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
@@ -23,6 +19,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.10",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.39",
     "@types/react": "^19",
