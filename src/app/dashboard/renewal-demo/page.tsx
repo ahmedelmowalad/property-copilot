@@ -396,7 +396,17 @@ export default function RenewalDemoPage() {
 
   async function triggerAction(trigger: string) {
     setLoading(true)
-    await processResponse(itemsRef.current, stageRef.current, trigger)
+    // Simulate realistic processing delays for automated backend steps
+    const DELAYS: Record<string, number> = {
+      tenant_signed: 3000, // Processing with landlord
+      landlord_approved: 4500, // DLD submission
+      dld_submitted: 5000, // Waiting for payment selection
+      payment_confirmed: 4000, // Processing documents
+    }
+    const delay = DELAYS[trigger] ?? 2000
+    setTimeout(async () => {
+      await processResponse(itemsRef.current, stageRef.current, trigger)
+    }, delay)
   }
 
   const QUICK = [

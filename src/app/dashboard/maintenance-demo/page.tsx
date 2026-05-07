@@ -337,7 +337,12 @@ export default function MaintenanceDemoPage() {
   // Auto-advance autonomous stages with realistic delays
   useEffect(() => {
     if (!AUTO_ADVANCE.has(stage)) return
-    const delay = stage === 'tech_dispatched' ? 4000 : stage === 'en_route' ? 5000 : stage === 'arrived' ? 3000 : stage === 'diagnosing' ? 4000 : stage === 'repairing' ? 6000 : 2500
+    const DELAYS: Record<string, number> = {
+      triaged: 3000, hoa_checked: 4000, providers_found: 4500, quote_selected: 3500,
+      security_cleared: 2500, tech_dispatched: 5000, en_route: 4500, arrived: 3500,
+      diagnosing: 5500, repairing: 4500, work_done: 3000, invoiced: 3500, paid: 2500,
+    }
+    const delay = DELAYS[stage] ?? 3000
     const timer = setTimeout(async () => {
       setLoading(true)
       try {
