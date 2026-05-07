@@ -18,12 +18,20 @@ const AUTO_STEPS: Record<string, [number, Out]> = {
     reply: 'All quotes received. **Analysing price, rating, availability…**',
     card: 'quote-comparison', nextStage: 'quote_selected',
   }],
-  quote_selected: [3500, {
-    reply: '**Best option selected:** Pro Plumbing Solutions (AED 330, 4.8⭐, 5:15 PM). **Requesting JVC security access clearance**…',
+  quote_selected: [2500, {
+    reply: '**Best option: Pro Plumbing Solutions (AED 330, 4.8⭐).** Calling them now to confirm booking and exact timing…',
+    card: 'phone-call-out', nextStage: 'provider_call_done',
+  }],
+  provider_call_done: [3500, {
+    reply: 'Booking **confirmed by phone** ✅. Now requesting **JVC security access clearance** for technician…',
     card: 'security-approval', nextStage: 'security_cleared',
   }],
   security_cleared: [2500, {
-    reply: 'Security **approved** ✅. **Technician Rashid Al-Mansoori (Lic: PM-5847-2024) dispatched**. ETA 5:15 PM. **Live GPS tracking active.**',
+    reply: 'Security **approved** ✅. Technician **Rashid Al-Mansoori (Lic: PM-5847-2024)** is confirmed. The AI is now calling you to go over the details before he arrives.',
+    card: 'phone-call-in', nextStage: 'phone_in_pending',
+  }],
+  tenant_call_done: [1500, {
+    reply: '**Technician confirmed and en route.** ETA 5:15 PM. **Live GPS tracking active.**',
     card: 'technician-assigned', nextStage: 'tech_dispatched',
   }],
   tech_dispatched: [5000, {
@@ -66,6 +74,14 @@ function demo(msgs: Msg[], stage: string, trigger?: string): Out {
   // Handle auto-progression trigger
   if (trigger === 'auto_next' && AUTO_STEPS[stage]) {
     return AUTO_STEPS[stage][1]
+  }
+
+  // Handle incoming call answer
+  if (trigger === 'call_answered') {
+    return {
+      reply: 'Great! I\'ll send you **live tracking updates** here as Rashid travels to you. You\'ll also get a call from him 10 minutes before arrival.',
+      card: null, nextStage: 'tenant_call_done',
+    }
   }
 
   switch (stage) {
