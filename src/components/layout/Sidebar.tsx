@@ -7,6 +7,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '⊞' },
   { href: '/dashboard/copilot', label: 'AI Copilot', icon: '✦', highlight: true },
   { href: '/dashboard/agent', label: 'Tenant Agent', icon: '💬', highlight: true, badge: 'NEW' },
+  { href: '/dashboard/whatsapp', label: 'WhatsApp Channel', icon: '📱', highlight: true, badge: 'NEW' },
   { href: '/dashboard/properties', label: 'Properties', icon: '🏢' },
   { href: '/dashboard/units', label: 'Units', icon: '🚪' },
   { href: '/dashboard/tenants', label: 'Tenants', icon: '👥' },
@@ -19,7 +20,6 @@ const futureModules = [
   { label: 'Buyer Support', status: 'Future' },
   { label: 'Seller Support', status: 'Future' },
   { label: 'Leasing', status: 'Planned' },
-  { label: 'WhatsApp Channel', status: 'Planned' },
   { label: 'ChatGPT Agent', status: 'Planned' },
 ]
 
