@@ -7,6 +7,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '⊞' },
   { href: '/dashboard/copilot', label: 'AI Copilot', icon: '✦', highlight: true },
   { href: '/dashboard/agent', label: 'Tenant Agent', icon: '💬', highlight: true, badge: 'NEW' },
+  { href: '/dashboard/renewal-demo', label: 'Renewal Demo', icon: '📜', highlight: true, badge: 'E2E' },
   { href: '/dashboard/whatsapp', label: 'WhatsApp Channel', icon: '📱', highlight: true, badge: 'NEW' },
   { href: '/dashboard/properties', label: 'Properties', icon: '🏢' },
   { href: '/dashboard/units', label: 'Units', icon: '🚪' },

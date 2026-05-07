@@ -247,7 +247,7 @@ function AgentInner() {
           <p className="text-xs text-gray-500 mt-0.5">Chat as this tenant with the AI agent</p>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3 space-y-1">
+        <div className="flex-1 overflow-y-auto hide-scrollbar p-3 space-y-1">
           {tenants.map(t => (
             <button
               key={t.id}
@@ -392,7 +392,7 @@ function AgentInner() {
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
               placeholder={selectedId ? 'Type your message…' : 'Select a tenant first'}
               disabled={!selectedId || loading}
-              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
             />
             <button
               onClick={() => sendMessage()}
