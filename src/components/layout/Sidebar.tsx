@@ -8,6 +8,7 @@ const navItems = [
   { href: '/dashboard/copilot', label: 'AI Copilot', icon: '✦', highlight: true },
   { href: '/dashboard/agent', label: 'Tenant Agent', icon: '💬', highlight: true },
   { href: '/dashboard/homeflow-demo', label: 'HomeFlow Agent', icon: '🏠', highlight: true },
+  { href: '/dashboard/airbnb-demo', label: 'Airbnb Ops AI', icon: '🏡', highlight: true },
   { href: '/dashboard/renewal-demo', label: 'Renewal Demo', icon: '📜', highlight: true },
   { href: '/dashboard/maintenance-demo', label: 'Maintenance AI', icon: '🔧', highlight: true },
   { href: '/dashboard/whatsapp', label: 'WhatsApp Channel', icon: '📱', highlight: true, badge: 'NEW' },
