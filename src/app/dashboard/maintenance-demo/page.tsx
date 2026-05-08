@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
+import { ApprovalRequestCard } from '@/components/ui/ApprovalRequestCard'
 
 interface Msg { role: 'tenant' | 'agent'; content: string }
 
@@ -8,12 +9,13 @@ type ConvItem =
   | { kind: 'message'; role: 'tenant' | 'agent'; content: string; time: string }
   | { kind: 'card'; cardType: string; time: string }
 
-// Stages that auto-advance without user input (phone_in_pending excluded — needs user to answer call)
+// Stages that auto-advance without user input
+// quote_selected and invoiced require HomeFlow approval gates before proceeding
 const AUTO_ADVANCE = new Set([
   'triaged','hoa_checked','providers_found',
-  'quote_selected','provider_call_done','security_cleared',
+  'provider_call_done','security_cleared',
   'tenant_call_done','tech_dispatched','en_route',
-  'arrived','diagnosing','repairing','work_done','invoiced','paid',
+  'arrived','diagnosing','repairing','work_done','paid',
 ])
 
 // ─── Card components ──────────────────────────────────────────────────────────
@@ -488,6 +490,8 @@ export default function MaintenanceDemoPage() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [callAnswered, setCallAnswered] = useState(false)
+  const [vendorApprovalShown, setVendorApprovalShown] = useState(false)
+  const [paymentApprovalShown, setPaymentApprovalShown] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef(stage)
   const itemsRef = useRef(items)
@@ -497,6 +501,28 @@ export default function MaintenanceDemoPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [items, loading])
+
+  // Show vendor approval gate after quote is selected
+  useEffect(() => {
+    if (stage === 'quote_selected' && !vendorApprovalShown) {
+      const timer = setTimeout(() => {
+        setVendorApprovalShown(true)
+        setItems(prev => [...prev, { kind: 'card', cardType: 'vendor-approval-request', time: getTime() }])
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
+  }, [stage, vendorApprovalShown])
+
+  // Show payment approval gate after invoice is generated
+  useEffect(() => {
+    if (stage === 'invoiced' && !paymentApprovalShown) {
+      const timer = setTimeout(() => {
+        setPaymentApprovalShown(true)
+        setItems(prev => [...prev, { kind: 'card', cardType: 'payment-approval-request', time: getTime() }])
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
+  }, [stage, paymentApprovalShown])
 
   // Auto-advance autonomous stages with realistic delays
   useEffect(() => {
@@ -628,7 +654,8 @@ export default function MaintenanceDemoPage() {
             <h1 className="font-semibold text-gray-900 text-sm">Maintenance AI · Emily Carter</h1>
             <p className="text-xs text-gray-500">Connected to Providers · Security · JVC Community Portal</p>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-xs bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full font-medium">Tenant · Maintenance</span>
             <span className="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               {AUTO_ADVANCE.has(stage) ? 'Autonomous' : 'Listening'}
@@ -651,6 +678,48 @@ export default function MaintenanceDemoPage() {
             if (ct === 'technician-assigned') return <TechnicianAssignedCard key={i} />
             if (['status-en-route','status-arrived','status-diagnosing','status-in-progress'].includes(ct)) return <StatusCard key={i} stage={ct} />
             if (ct === 'completion-photos') return <CompletionPhotosCard key={i} />
+            if (ct === 'vendor-approval-request') return (
+              <div key={i} className="ml-11 max-w-[520px]">
+                <ApprovalRequestCard
+                  level={2}
+                  levelLabel="External Data Share + Dispatch"
+                  action="Contact vendor and dispatch technician to your unit"
+                  recipient="Pro Plumbing Solutions (Rashid Al-Mansoori, Lic: PM-5847-2024)"
+                  dataShared={['Unit address: A-301, JVC Garden Apartments', 'Issue: kitchen sink P-trap leak', 'Preferred access time: 5:15 PM today']}
+                  estimatedCost="AED 330 (quoted — payable on completion)"
+                  consequence="Technician receives your address and is dispatched. They will arrive within the confirmed window."
+                  humanReview={false}
+                  approveLabel="Approve & Dispatch Technician"
+                  rejectLabel="Cancel"
+                  onApprove={() => {
+                    setLoading(true)
+                    setTimeout(() => processResponse(itemsRef.current, stageRef.current, 'auto_next'), 500)
+                  }}
+                  onReject={() => {}}
+                />
+              </div>
+            )
+            if (ct === 'payment-approval-request') return (
+              <div key={i} className="ml-11 max-w-[520px]">
+                <ApprovalRequestCard
+                  level={5}
+                  levelLabel="Financial Transaction"
+                  action="Deduct repair fee from your registered payment card"
+                  recipient="Pro Plumbing Solutions"
+                  dataShared={['Payment amount: AED 330', 'Card: Emirates NBD Debit ••4521', 'Invoice: #INV-2025-4821']}
+                  estimatedCost="AED 330 (final, incl. 5% VAT)"
+                  consequence="Technician receives payment. Invoice closed. Maintenance record and warranty certificate issued."
+                  humanReview={true}
+                  approveLabel="Approve Payment — AED 330"
+                  rejectLabel="Dispute Invoice"
+                  onApprove={() => {
+                    setLoading(true)
+                    setTimeout(() => processResponse(itemsRef.current, stageRef.current, 'auto_next'), 500)
+                  }}
+                  onReject={() => {}}
+                />
+              </div>
+            )
             if (ct === 'invoice-card') return <InvoiceCard key={i} />
             if (ct === 'payment-processed') return <PaymentCard key={i} />
             if (ct === 'feedback-card') return <FeedbackCard key={i} />

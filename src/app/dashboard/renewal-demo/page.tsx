@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
+import { ApprovalRequestCard } from '@/components/ui/ApprovalRequestCard'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -340,6 +341,7 @@ export default function RenewalDemoPage() {
   const [loading, setLoading] = useState(false)
   const [uaePassSigned, setUAEPassSigned] = useState(false)
   const [landlordApproved, setLandlordApproved] = useState(false)
+  const [dldApprovalShown, setDldApprovalShown] = useState(false)
   const [chequesUploaded, setChequesUploaded] = useState(false)
   const [pmConfirmed, setPmConfirmed] = useState(false)
   const [docsUploaded, setDocsUploaded] = useState(false)
@@ -352,6 +354,13 @@ export default function RenewalDemoPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [items, loading])
+
+  // When landlord approves, inject DLD approval gate card
+  useEffect(() => {
+    if (dldApprovalShown) {
+      setItems(prev => [...prev, { kind: 'card', cardType: 'dld-approval-request', time: getTime() }])
+    }
+  }, [dldApprovalShown])
 
   async function processResponse(snapshot: ConvItem[], currentStage: string, trigger?: string) {
     try {
@@ -466,6 +475,7 @@ export default function RenewalDemoPage() {
             <p className="text-xs text-gray-500">Connected to DLD · UAE Pass · Ejari · Internal CRM</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
+            <span className="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-medium">Tenant · Lease Renewal</span>
             <span className="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />Live AI
             </span>
@@ -480,7 +490,25 @@ export default function RenewalDemoPage() {
             if (ct === 'contract-prep') return <ContractPrepCard key={i} />
             if (ct === 'contract-ready') return <ContractReadyCard key={i} />
             if (ct === 'uaepass-card') return <UAEPassCard key={i} signed={uaePassSigned} onSign={() => { setUAEPassSigned(true); triggerAction('tenant_signed') }} />
-            if (ct === 'landlord-approval') return <LandlordApprovalCard key={i} approved={landlordApproved} onApprove={() => { setLandlordApproved(true); triggerAction('landlord_approved') }} />
+            if (ct === 'landlord-approval') return <LandlordApprovalCard key={i} approved={landlordApproved} onApprove={() => { setLandlordApproved(true); setDldApprovalShown(true) }} />
+            if (ct === 'dld-approval-request') return (
+              <div key={i} className="ml-11 max-w-[520px]">
+                <ApprovalRequestCard
+                  level={4}
+                  levelLabel="Government Submission"
+                  action="Submit tenancy contract to Dubai Land Department"
+                  recipient="Dubai Land Department (DLD) — Ejari System"
+                  dataShared={['Tenancy contract (Form F)', 'Tenant Emirates ID', 'Property Title Deed', 'Ref: TC-MH-1204-2025-0117']}
+                  estimatedCost="AED 220 (Ejari registration fee)"
+                  consequence="DLD registers contract; official Ejari number issued within 48 hours"
+                  humanReview={false}
+                  approveLabel="Confirm & Submit to DLD"
+                  rejectLabel="Cancel"
+                  onApprove={() => { setLoading(true); setTimeout(() => triggerAction('landlord_approved'), 4500) }}
+                  onReject={() => {}}
+                />
+              </div>
+            )
             if (ct === 'dld-submission') return <DLDSubmissionCard key={i} />
             if (ct === 'cheque-photos') return <ChequePhotosCard key={i} uploaded={chequesUploaded} onUpload={() => { setChequesUploaded(true); triggerAction('cheques_uploaded') }} />
             if (ct === 'pm-confirmation') return <PMConfirmationCard key={i} confirmed={pmConfirmed} onConfirm={() => { setPmConfirmed(true); triggerAction('pm_confirmed') }} />
