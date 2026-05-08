@@ -1,4 +1,4 @@
-// In-memory data store — no external database required
+// HomeFlow in-memory data store — no external database required
 // Seed data is pre-loaded; mutations persist within a warm serverless instance
 
 function uid(): string {
@@ -42,6 +42,29 @@ export interface ActivityLog {
   id: string; entityType: string; entityId: string; ticketId: string | null
   action: string; notes: string | null; createdAt: string
 }
+export interface Communication {
+  id: string; channel: string; direction: string; status: string
+  fromNumber: string | null; fromName: string | null; toNumber: string | null
+  body: string; mediaUrl: string | null
+  aiCategory: string | null; aiUrgency: string | null; aiSummary: string | null; aiDraftReply: string | null
+  relatedTenantId: string | null; relatedContactId: string | null; relatedTicketId: string | null
+  whatsappMessageId: string | null; threadId: string | null
+  createdAt: string; updatedAt: string
+}
+export interface CallLog {
+  id: string; status: string; direction: string
+  fromNumber: string; toNumber: string; callerName: string | null
+  durationSeconds: number | null; recordingUrl: string | null
+  transcription: string | null; aiSummary: string | null; aiActionItems: string[] | null
+  relatedTenantId: string | null; relatedContactId: string | null
+  twilioCallSid: string | null; startedAt: string; endedAt: string | null; createdAt: string
+}
+export interface Contact {
+  id: string; firstName: string; lastName: string
+  email: string | null; phone: string | null; whatsappNumber: string | null
+  contactType: string; leadStatus: string; propertyInterest: string | null
+  budgetAed: number | null; notes: string | null; createdAt: string; updatedAt: string
+}
 export interface Request {
   id: string; senderType: string; senderName: string | null; senderEmail: string | null
   senderPhone: string | null; channel: string; rawMessage: string; category: string | null
@@ -61,6 +84,9 @@ interface Store {
   tickets: Ticket[]
   activityLogs: ActivityLog[]
   requests: Request[]
+  communications: Communication[]
+  callLogs: CallLog[]
+  contacts: Contact[]
 }
 
 const g = globalThis as unknown as { __pcStore?: Store }
@@ -117,13 +143,163 @@ function buildSeedData(): Store {
     { id: 'log-005', entityType: 'MaintenanceTicket', entityId: 'ticket-004', ticketId: 'ticket-004', action: 'Created', notes: 'EMERGENCY ticket — immediate response required', createdAt: d2 },
   ]
 
-  return { properties, units, tenants, leases, tickets, activityLogs, requests: [] }
+  const communications: Communication[] = [
+    {
+      id: 'comm-001', channel: 'whatsapp', direction: 'inbound', status: 'new',
+      fromNumber: '+971501234567', fromName: 'Sarah Johnson', toNumber: '+971800123456',
+      body: 'Hi, the AC in unit 1204 stopped working last night and it\'s getting really hot. Can someone come today?',
+      mediaUrl: null,
+      aiCategory: 'Maintenance', aiUrgency: 'High',
+      aiSummary: 'Tenant reports AC failure in unit 1204. HVAC technician required same-day.',
+      aiDraftReply: 'Dear Sarah, thank you for reaching out. We have received your request and are arranging an HVAC technician to visit unit 1204 today. We will confirm the appointment time shortly. Apologies for the inconvenience.',
+      relatedTenantId: 'tenant-sarah-johnson', relatedContactId: null, relatedTicketId: 'ticket-001',
+      whatsappMessageId: 'wamid.HBgLOTcxNTAxMjM0NTY3FQIAERgSMzZBQzE2MzI0NTY3ODEA', threadId: 'thread-sarah-001',
+      createdAt: '2026-05-07T08:23:00.000Z', updatedAt: '2026-05-07T08:23:00.000Z',
+    },
+    {
+      id: 'comm-002', channel: 'whatsapp', direction: 'inbound', status: 'read',
+      fromNumber: '+971559876543', fromName: 'Omar Hassan', toNumber: '+971800123456',
+      body: 'Good morning! Just wanted to check - is there any update on the lease renewal for unit 1802? My current lease ends in February.',
+      mediaUrl: null,
+      aiCategory: 'Renewal', aiUrgency: 'Medium',
+      aiSummary: 'Tenant enquiring about lease renewal status for unit 1802. Lease expires February 2025.',
+      aiDraftReply: 'Good morning Omar! We are currently preparing the renewal offer for unit 1802. You can expect to receive the new tenancy contract proposal within the next 3-5 business days. Please feel free to reach out if you have any questions.',
+      relatedTenantId: 'tenant-omar-hassan', relatedContactId: null, relatedTicketId: null,
+      whatsappMessageId: 'wamid.HBgLOTcxNTU5ODc2NTQzFQIAERgSMzZBQzE2MzI0NTY3ODEB', threadId: 'thread-omar-001',
+      createdAt: '2026-05-07T09:45:00.000Z', updatedAt: '2026-05-07T09:47:00.000Z',
+    },
+    {
+      id: 'comm-003', channel: 'whatsapp', direction: 'outbound', status: 'replied',
+      fromNumber: '+971800123456', fromName: 'HomeFlow', toNumber: '+971559876543',
+      body: 'Good morning Omar! We are currently preparing the renewal offer for unit 1802. You can expect to receive the new tenancy contract proposal within the next 3-5 business days. Please feel free to reach out if you have any questions.',
+      mediaUrl: null,
+      aiCategory: null, aiUrgency: null, aiSummary: null, aiDraftReply: null,
+      relatedTenantId: 'tenant-omar-hassan', relatedContactId: null, relatedTicketId: null,
+      whatsappMessageId: 'wamid.HBgLOTcxNTU5ODc2NTQzFQIAERgSMzZBQzE2MzI0NTY3ODEC', threadId: 'thread-omar-001',
+      createdAt: '2026-05-07T10:02:00.000Z', updatedAt: '2026-05-07T10:02:00.000Z',
+    },
+    {
+      id: 'comm-004', channel: 'whatsapp', direction: 'inbound', status: 'new',
+      fromNumber: '+971524445555', fromName: null, toNumber: '+971800123456',
+      body: 'Hello, I saw your listing for a 2BR in Dubai Marina. Is unit 1205 still available? What is the rent?',
+      mediaUrl: null,
+      aiCategory: 'Lease', aiUrgency: 'Low',
+      aiSummary: 'Prospective tenant enquiring about 2BR unit 1205 in Dubai Marina. Rental enquiry.',
+      aiDraftReply: 'Hello! Thank you for your interest in our Marina Heights property. Unit 1205 is a recently renovated 1-bedroom (not 2BR) available at AED 72,000/year. Would you like to schedule a viewing? Please let me know your preferred date and time.',
+      relatedTenantId: null, relatedContactId: 'contact-lead-001', relatedTicketId: null,
+      whatsappMessageId: 'wamid.HBgLOTcxNTI0NDQ1NTU1FQIAERgSMzZBQzE2MzI0NTY3ODED', threadId: 'thread-lead-001',
+      createdAt: '2026-05-07T11:30:00.000Z', updatedAt: '2026-05-07T11:30:00.000Z',
+    },
+    {
+      id: 'comm-005', channel: 'whatsapp', direction: 'inbound', status: 'new',
+      fromNumber: '+971504445566', fromName: 'Fatima Ali', toNumber: '+971800123456',
+      body: 'URGENT! There is water leaking from the ceiling in my kitchen. It is getting worse. Please send someone immediately!',
+      mediaUrl: null,
+      aiCategory: 'Emergency', aiUrgency: 'Emergency',
+      aiSummary: 'EMERGENCY: Active water leak from ceiling in unit 905, Al Reem Tower. Immediate plumber dispatch required.',
+      aiDraftReply: 'Fatima, we have received your emergency message. We are contacting a licensed plumber right now and they will be with you within the hour. As a precaution, please turn off the water supply valve under your kitchen sink. We will keep you updated every 15 minutes.',
+      relatedTenantId: 'tenant-fatima-ali', relatedContactId: null, relatedTicketId: 'ticket-004',
+      whatsappMessageId: 'wamid.HBgLOTcxNTA0NDQ1NTY2FQIAERgSMzZBQzE2MzI0NTY3ODEE', threadId: 'thread-fatima-001',
+      createdAt: '2026-05-08T07:15:00.000Z', updatedAt: '2026-05-08T07:15:00.000Z',
+    },
+  ]
+
+  const callLogs: CallLog[] = [
+    {
+      id: 'call-001', status: 'completed', direction: 'inbound',
+      fromNumber: '+971523456789', toNumber: '+971800123456',
+      callerName: 'Emily Carter', durationSeconds: 187,
+      recordingUrl: null,
+      transcription: 'Hi, this is Emily from unit A-301 in JVC. I just wanted to follow up on the bathroom sink repair. The plumber was supposed to come yesterday but no one showed up. I have been waiting all day. Can you please check what happened and let me know when they will reschedule?',
+      aiSummary: 'Tenant Emily Carter (Unit A-301, JVC) called to follow up on missed plumber appointment for bathroom sink repair. Plumber no-show yesterday. Requesting reschedule.',
+      aiActionItems: ['Contact ProPlumb Dubai to reschedule repair for unit A-301', 'Call Emily back to confirm new appointment time', 'Update ticket-002 with no-show note'],
+      relatedTenantId: 'tenant-emily-carter', relatedContactId: null,
+      twilioCallSid: 'CA1234567890abcdef1234567890abcdef',
+      startedAt: '2026-05-07T14:30:00.000Z', endedAt: '2026-05-07T14:33:07.000Z',
+      createdAt: '2026-05-07T14:33:07.000Z',
+    },
+    {
+      id: 'call-002', status: 'completed', direction: 'inbound',
+      fromNumber: '+971567890123', toNumber: '+971800123456',
+      callerName: 'Daniel Lee', durationSeconds: 94,
+      recordingUrl: null,
+      transcription: 'Yes hello, I am calling about my lease renewal. My lease for unit A-302 expires in November. I want to renew but I heard there might be a rent increase. What is the new rate going to be? I would like to discuss before I make a decision.',
+      aiSummary: 'Tenant Daniel Lee (Unit A-302, JVC) calling about lease renewal. Lease expires November 2024. Concerned about potential rent increase. Wants to negotiate before committing.',
+      aiActionItems: ['Review current market rate for A-302 comparable units in JVC', 'Prepare renewal offer with rent options', 'Schedule callback with Daniel to discuss terms'],
+      relatedTenantId: 'tenant-daniel-lee', relatedContactId: null,
+      twilioCallSid: 'CA2345678901bcdef0123456789abcdef1',
+      startedAt: '2026-05-07T16:10:00.000Z', endedAt: '2026-05-07T16:11:34.000Z',
+      createdAt: '2026-05-07T16:11:34.000Z',
+    },
+    {
+      id: 'call-003', status: 'missed', direction: 'inbound',
+      fromNumber: '+971509998877', toNumber: '+971800123456',
+      callerName: null, durationSeconds: 0,
+      recordingUrl: null, transcription: null, aiSummary: null, aiActionItems: null,
+      relatedTenantId: null, relatedContactId: null,
+      twilioCallSid: 'CA3456789012cdef01234567890abcdef2',
+      startedAt: '2026-05-07T18:45:00.000Z', endedAt: '2026-05-07T18:45:00.000Z',
+      createdAt: '2026-05-07T18:45:00.000Z',
+    },
+    {
+      id: 'call-004', status: 'completed', direction: 'inbound',
+      fromNumber: '+971528887766', toNumber: '+971800123456',
+      callerName: 'Ahmed Al-Rashidi', durationSeconds: 312,
+      recordingUrl: null,
+      transcription: 'Good morning. My name is Ahmed Al-Rashidi, I am interested in buying a 2 bedroom apartment in Dubai Marina. I have a budget of about 1.8 million dirhams. Do you have anything available? I would prefer a sea view and ideally on a higher floor. I am ready to move quickly if the right property comes up.',
+      aiSummary: 'Buyer lead Ahmed Al-Rashidi seeking 2BR in Dubai Marina. Budget AED 1.8M. Preferences: sea view, high floor. Motivated buyer.',
+      aiActionItems: ['Add Ahmed as a buyer contact with budget AED 1.8M', 'Check available 2BR Marina units in portfolio and network', 'Schedule property viewing'],
+      relatedTenantId: null, relatedContactId: 'contact-buyer-001',
+      twilioCallSid: 'CA4567890123def012345678901abcdef3',
+      startedAt: '2026-05-08T09:20:00.000Z', endedAt: '2026-05-08T09:25:12.000Z',
+      createdAt: '2026-05-08T09:25:12.000Z',
+    },
+  ]
+
+  const contacts: Contact[] = [
+    {
+      id: 'contact-lead-001', firstName: 'Khalid', lastName: 'Al-Mansouri',
+      email: null, phone: '+971524445555', whatsappNumber: '+971524445555',
+      contactType: 'prospect_tenant', leadStatus: 'new',
+      propertyInterest: 'Marina Heights — 1BR unit 1205', budgetAed: 72000,
+      notes: 'Enquired via WhatsApp about unit 1205. Appears to be looking for 2BR but unit is 1BR.',
+      createdAt: '2026-05-07T11:30:00.000Z', updatedAt: '2026-05-07T11:30:00.000Z',
+    },
+    {
+      id: 'contact-buyer-001', firstName: 'Ahmed', lastName: 'Al-Rashidi',
+      email: null, phone: '+971528887766', whatsappNumber: null,
+      contactType: 'buyer', leadStatus: 'contacted',
+      propertyInterest: '2BR Dubai Marina — sea view, high floor', budgetAed: 1800000,
+      notes: 'Motivated buyer, ready to move quickly. Called in. Budget AED 1.8M.',
+      createdAt: '2026-05-08T09:25:12.000Z', updatedAt: '2026-05-08T09:25:12.000Z',
+    },
+    {
+      id: 'contact-seller-001', firstName: 'Rania', lastName: 'Khalil',
+      email: 'rania.khalil@email.com', phone: '+971501112233', whatsappNumber: '+971501112233',
+      contactType: 'seller', leadStatus: 'qualified',
+      propertyInterest: 'Selling 3BR villa in Jumeirah', budgetAed: null,
+      notes: 'Owner wants to sell her Jumeirah villa. Asking around AED 3.5M. Spoke by phone and WhatsApp.',
+      createdAt: '2026-05-06T15:00:00.000Z', updatedAt: '2026-05-06T15:00:00.000Z',
+    },
+    {
+      id: 'contact-landlord-001', firstName: 'Mohammed', lastName: 'Al-Farsi',
+      email: 'mfarsi@business.ae', phone: '+971504443322', whatsappNumber: '+971504443322',
+      contactType: 'landlord', leadStatus: 'contacted',
+      propertyInterest: '12-unit building in Al Barsha, looking for management', budgetAed: null,
+      notes: 'Portfolio owner looking for property management services. Has 12 units. High-value lead.',
+      createdAt: '2026-05-05T11:00:00.000Z', updatedAt: '2026-05-05T11:00:00.000Z',
+    },
+  ]
+
+  return { properties, units, tenants, leases, tickets, activityLogs, requests: [], communications, callLogs, contacts }
 }
 
 function getStore(): Store {
   if (!g.__pcStore) g.__pcStore = buildSeedData()
   return g.__pcStore
 }
+
+export { getStore }
 
 // ─── Properties ────────────────────────────────────────────────────────────
 
@@ -503,6 +679,194 @@ export function createRequest(data: Partial<Request>): Request {
   return r
 }
 
+// ─── Communications ────────────────────────────────────────────────────────
+
+export function getCommunications(filters?: { channel?: string; status?: string; tenantId?: string; contactId?: string }) {
+  const s = getStore()
+  return s.communications
+    .filter(c => {
+      if (filters?.channel && c.channel !== filters.channel) return false
+      if (filters?.status && c.status !== filters.status) return false
+      if (filters?.tenantId && c.relatedTenantId !== filters.tenantId) return false
+      if (filters?.contactId && c.relatedContactId !== filters.contactId) return false
+      return true
+    })
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map(c => enrichCommunication(c, s))
+}
+
+function enrichCommunication(c: Communication, s: Store) {
+  const tenant = c.relatedTenantId ? s.tenants.find(t => t.id === c.relatedTenantId) : null
+  const contact = c.relatedContactId ? s.contacts.find(ct => ct.id === c.relatedContactId) : null
+  const ticket = c.relatedTicketId ? s.tickets.find(t => t.id === c.relatedTicketId) : null
+  return {
+    ...c,
+    relatedTenant: tenant ? { id: tenant.id, firstName: tenant.firstName, lastName: tenant.lastName, phone: tenant.phone } : null,
+    relatedContact: contact ? { id: contact.id, firstName: contact.firstName, lastName: contact.lastName, contactType: contact.contactType } : null,
+    relatedTicket: ticket ? { id: ticket.id, title: ticket.title, status: ticket.status } : null,
+  }
+}
+
+export function getCommunicationById(id: string) {
+  const s = getStore()
+  const c = s.communications.find(x => x.id === id)
+  if (!c) return null
+  return enrichCommunication(c, s)
+}
+
+export function getCommunicationsByThread(threadId: string) {
+  const s = getStore()
+  return s.communications
+    .filter(c => c.threadId === threadId)
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+    .map(c => enrichCommunication(c, s))
+}
+
+export function createCommunication(data: Partial<Communication>): Communication {
+  const s = getStore()
+  const c: Communication = {
+    id: uid(), channel: data.channel!, direction: data.direction || 'inbound',
+    status: data.status || 'new', fromNumber: data.fromNumber || null,
+    fromName: data.fromName || null, toNumber: data.toNumber || null,
+    body: data.body!, mediaUrl: data.mediaUrl || null,
+    aiCategory: data.aiCategory || null, aiUrgency: data.aiUrgency || null,
+    aiSummary: data.aiSummary || null, aiDraftReply: data.aiDraftReply || null,
+    relatedTenantId: data.relatedTenantId || null, relatedContactId: data.relatedContactId || null,
+    relatedTicketId: data.relatedTicketId || null,
+    whatsappMessageId: data.whatsappMessageId || null, threadId: data.threadId || null,
+    createdAt: nowIso(), updatedAt: nowIso(),
+  }
+  s.communications.unshift(c)
+  return c
+}
+
+export function updateCommunication(id: string, data: Partial<Communication>): Communication | null {
+  const s = getStore()
+  const idx = s.communications.findIndex(x => x.id === id)
+  if (idx < 0) return null
+  s.communications[idx] = { ...s.communications[idx], ...data, id, updatedAt: nowIso() }
+  return s.communications[idx]
+}
+
+// ─── Call Logs ─────────────────────────────────────────────────────────────
+
+function enrichCallLog(c: CallLog, s: Store) {
+  const tenant = c.relatedTenantId ? s.tenants.find(t => t.id === c.relatedTenantId) : null
+  const contact = c.relatedContactId ? s.contacts.find(ct => ct.id === c.relatedContactId) : null
+  return {
+    ...c,
+    relatedTenant: tenant ? { id: tenant.id, firstName: tenant.firstName, lastName: tenant.lastName } : null,
+    relatedContact: contact ? { id: contact.id, firstName: contact.firstName, lastName: contact.lastName, contactType: contact.contactType } : null,
+  }
+}
+
+export function getCallLogs(filters?: { status?: string; direction?: string; tenantId?: string }) {
+  const s = getStore()
+  return s.callLogs
+    .filter(c => {
+      if (filters?.status && c.status !== filters.status) return false
+      if (filters?.direction && c.direction !== filters.direction) return false
+      if (filters?.tenantId && c.relatedTenantId !== filters.tenantId) return false
+      return true
+    })
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map(c => enrichCallLog(c, s))
+}
+
+export function getCallLogById(id: string) {
+  const s = getStore()
+  const c = s.callLogs.find(x => x.id === id)
+  if (!c) return null
+  return enrichCallLog(c, s)
+}
+
+export function createCallLog(data: Partial<CallLog>): CallLog {
+  const s = getStore()
+  const c: CallLog = {
+    id: uid(), status: data.status || 'completed', direction: data.direction || 'inbound',
+    fromNumber: data.fromNumber!, toNumber: data.toNumber!,
+    callerName: data.callerName || null, durationSeconds: data.durationSeconds || null,
+    recordingUrl: data.recordingUrl || null, transcription: data.transcription || null,
+    aiSummary: data.aiSummary || null, aiActionItems: data.aiActionItems || null,
+    relatedTenantId: data.relatedTenantId || null, relatedContactId: data.relatedContactId || null,
+    twilioCallSid: data.twilioCallSid || null,
+    startedAt: data.startedAt || nowIso(), endedAt: data.endedAt || null, createdAt: nowIso(),
+  }
+  s.callLogs.unshift(c)
+  return c
+}
+
+export function updateCallLog(id: string, data: Partial<CallLog>): CallLog | null {
+  const s = getStore()
+  const idx = s.callLogs.findIndex(x => x.id === id)
+  if (idx < 0) return null
+  s.callLogs[idx] = { ...s.callLogs[idx], ...data, id }
+  return s.callLogs[idx]
+}
+
+// ─── Contacts ──────────────────────────────────────────────────────────────
+
+export function getContacts(filters?: { contactType?: string; leadStatus?: string }) {
+  const s = getStore()
+  return s.contacts
+    .filter(c => {
+      if (filters?.contactType && c.contactType !== filters.contactType) return false
+      if (filters?.leadStatus && c.leadStatus !== filters.leadStatus) return false
+      return true
+    })
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map(c => enrichContact(c, s))
+}
+
+function enrichContact(c: Contact, s: Store) {
+  const recentComms = s.communications
+    .filter(m => m.relatedContactId === c.id)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 3)
+  const recentCalls = s.callLogs
+    .filter(cl => cl.relatedContactId === c.id)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 3)
+  return { ...c, recentComms, recentCalls }
+}
+
+export function getContactById(id: string) {
+  const s = getStore()
+  const c = s.contacts.find(x => x.id === id)
+  if (!c) return null
+  return enrichContact(c, s)
+}
+
+export function createContact(data: Partial<Contact>): Contact {
+  const s = getStore()
+  const c: Contact = {
+    id: uid(), firstName: data.firstName!, lastName: data.lastName!,
+    email: data.email || null, phone: data.phone || null,
+    whatsappNumber: data.whatsappNumber || null,
+    contactType: data.contactType || 'other', leadStatus: data.leadStatus || 'new',
+    propertyInterest: data.propertyInterest || null, budgetAed: data.budgetAed || null,
+    notes: data.notes || null, createdAt: nowIso(), updatedAt: nowIso(),
+  }
+  s.contacts.unshift(c)
+  return c
+}
+
+export function updateContact(id: string, data: Partial<Contact>): Contact | null {
+  const s = getStore()
+  const idx = s.contacts.findIndex(x => x.id === id)
+  if (idx < 0) return null
+  s.contacts[idx] = { ...s.contacts[idx], ...data, id, updatedAt: nowIso() }
+  return s.contacts[idx]
+}
+
+export function deleteContact(id: string): boolean {
+  const s = getStore()
+  const idx = s.contacts.findIndex(x => x.id === id)
+  if (idx < 0) return false
+  s.contacts.splice(idx, 1)
+  return true
+}
+
 // ─── Dashboard ─────────────────────────────────────────────────────────────
 
 export function getDashboardStats() {
@@ -513,6 +877,7 @@ export function getDashboardStats() {
     const tenant = r.relatedTenantId ? s.tenants.find(t => t.id === r.relatedTenantId) : null
     return { ...r, relatedProperty: prop ? { name: prop.name } : null, relatedTenant: tenant ? { firstName: tenant.firstName, lastName: tenant.lastName } : null }
   })
+  const recentComms = [...s.communications].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5).map(c => enrichCommunication(c, s))
   return {
     stats: {
       properties: s.properties.length,
@@ -521,9 +886,13 @@ export function getDashboardStats() {
       activeLeases: s.leases.filter(l => ['Active', 'ExpiringSoon'].includes(l.status)).length,
       openTickets: s.tickets.filter(t => !['Completed', 'Cancelled'].includes(t.status)).length,
       urgentTickets: s.tickets.filter(t => ['High', 'Emergency'].includes(t.urgency) && !['Completed', 'Cancelled'].includes(t.status)).length,
+      unreadMessages: s.communications.filter(c => c.status === 'new' && c.direction === 'inbound').length,
+      totalContacts: s.contacts.length,
+      missedCalls: s.callLogs.filter(c => c.status === 'missed').length,
     },
     recentTickets,
     recentRequests,
+    recentComms,
   }
 }
 

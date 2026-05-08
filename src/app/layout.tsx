@@ -5,9 +5,9 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Property Copilot — AI Operations for UAE Property Management',
+  title: 'HomeFlow — Real Estate Operations Platform',
   description:
-    'AI-powered operations assistant for UAE residential real-estate management. Triage tenant requests, draft professional replies, and create maintenance tasks.',
+    'HomeFlow connects WhatsApp, phone calls, and your entire real estate operation in one AI-powered platform. Manage properties, tenants, maintenance, and communications for UAE residential real estate.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

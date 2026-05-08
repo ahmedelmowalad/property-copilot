@@ -7,16 +7,16 @@ export default function LandingPage() {
       <header className="border-b border-gray-100 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">PC</div>
-            <span className="font-semibold text-gray-900">Property Copilot</span>
+            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">HF</div>
+            <span className="font-semibold text-gray-900">HomeFlow</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">UAE Residential Operations</span>
+            <span className="text-sm text-gray-500">UAE Real Estate Platform</span>
             <Link
               href="/dashboard"
-              className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-emerald-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
             >
-              Launch Dashboard
+              Open Platform
             </Link>
           </div>
         </div>
@@ -24,59 +24,67 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-6 py-20 text-center">
-        <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium px-4 py-1.5 rounded-full mb-6 border border-blue-100">
-          <span className="text-blue-500">✦</span>
-          AI-Powered Operations Agent — UAE Property Management
+        <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-1.5 rounded-full mb-6 border border-emerald-100">
+          <span>📱</span>
+          WhatsApp + Phone Calls + AI — UAE Real Estate Operations
         </div>
         <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-6">
-          Triage tenant requests.
+          Your entire real estate operation
           <br />
-          <span className="text-blue-600">Draft professional replies.</span>
-          <br />
-          Never miss a maintenance issue.
+          <span className="text-emerald-600">connected in one platform.</span>
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-          Property Copilot is an AI operations assistant for UAE residential real-estate managers and landlords.
-          Paste any message — tenant complaint, owner update, vendor request — and get instant AI triage, draft responses, and maintenance ticket suggestions.
+          HomeFlow connects WhatsApp messages and phone calls directly into your operations dashboard.
+          Every tenant message, lead inquiry, and call — triaged by AI, managed by you.
         </p>
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-4 flex-wrap">
           <Link
             href="/dashboard"
-            className="bg-blue-600 text-white font-semibold px-8 py-4 rounded-xl hover:bg-blue-700 transition-colors text-lg shadow-md shadow-blue-200"
+            className="bg-emerald-600 text-white font-semibold px-8 py-4 rounded-xl hover:bg-emerald-700 transition-colors text-lg shadow-md shadow-emerald-200"
           >
-            Launch Demo Dashboard →
+            Open Platform →
           </Link>
-          <a
-            href="#features"
-            className="text-gray-600 font-medium px-6 py-4 rounded-xl hover:text-gray-900 transition-colors text-lg"
+          <Link
+            href="/dashboard/inbox"
+            className="text-gray-700 border border-gray-300 font-medium px-6 py-4 rounded-xl hover:border-gray-400 transition-colors text-lg"
           >
-            Learn more
-          </a>
+            View Inbox
+          </Link>
         </div>
         <p className="text-sm text-gray-400 mt-4">No login required · Demo data pre-loaded · UAE residential focus</p>
       </section>
 
-      {/* Demo Message Preview */}
+      {/* Channel preview */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
         <div className="bg-gray-50 rounded-2xl border border-gray-200 p-8">
-          <p className="text-sm text-gray-500 mb-4 font-medium">EXAMPLE: Paste any messy message →</p>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-xs text-gray-400 mb-2 uppercase tracking-wide">Incoming message</p>
-              <div className="bg-white rounded-lg border border-gray-200 p-4 text-sm text-gray-700 italic">
-                &quot;Hi, the AC in unit 1204 stopped working last night and it&apos;s getting really hot. Can someone come today?&quot;
+          <p className="text-sm text-gray-500 mb-6 font-medium text-center">ALL CHANNELS FLOW INTO ONE INBOX</p>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white text-sm">📱</div>
+                <span className="font-medium text-sm text-gray-800">WhatsApp</span>
+                <span className="ml-auto text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Live</span>
               </div>
+              <p className="text-xs text-gray-500 italic">&quot;Hi, AC in unit 1204 not working&quot;</p>
+              <p className="text-xs text-emerald-600 mt-2 font-medium">→ AI triaged: High · Maintenance</p>
             </div>
-            <div>
-              <p className="text-xs text-blue-500 mb-2 uppercase tracking-wide font-medium">AI Copilot Output</p>
-              <div className="bg-white rounded-lg border border-blue-100 p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">High Priority</span>
-                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">Maintenance</span>
-                </div>
-                <p className="text-xs text-gray-600">AC failure in unit 1204. HVAC technician required same day.</p>
-                <p className="text-xs text-gray-500">Suggested: Create HVAC ticket · Assign vendor · Draft tenant reply</p>
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white text-sm">📞</div>
+                <span className="font-medium text-sm text-gray-800">Phone Call</span>
+                <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Live</span>
               </div>
+              <p className="text-xs text-gray-500 italic">Inbound call from +971 50 xxx xxxx</p>
+              <p className="text-xs text-emerald-600 mt-2 font-medium">→ Recorded + AI transcribed</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center text-white text-sm">✦</div>
+                <span className="font-medium text-sm text-gray-800">AI Copilot</span>
+                <span className="ml-auto text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Active</span>
+              </div>
+              <p className="text-xs text-gray-500 italic">Draft reply + ticket suggestion ready</p>
+              <p className="text-xs text-emerald-600 mt-2 font-medium">→ Awaiting your approval</p>
             </div>
           </div>
         </div>
@@ -86,38 +94,38 @@ export default function LandingPage() {
       <section id="features" className="bg-gray-50 border-t border-gray-100 py-20">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-4">Everything a UAE property manager needs</h2>
-          <p className="text-gray-500 text-center mb-12 max-w-xl mx-auto">One platform to manage properties, tenants, leases, maintenance — and AI-assist every incoming request.</p>
+          <p className="text-gray-500 text-center mb-12 max-w-xl mx-auto">One platform to manage properties, tenants, leases, maintenance — and every incoming communication from any channel.</p>
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
+                icon: '📱',
+                title: 'WhatsApp Integration',
+                desc: 'Connect your WhatsApp Business number. Every tenant message, lead inquiry, and contractor update arrives in your inbox — auto-triaged by AI within seconds.',
+              },
+              {
+                icon: '📞',
+                title: 'Phone Call Management',
+                desc: 'Inbound calls are recorded, transcribed, and summarized automatically. Full call log with AI-generated action items. Never lose track of a verbal commitment.',
+              },
+              {
                 icon: '✦',
                 title: 'AI Request Triage',
-                desc: 'Paste any message. Get instant category, urgency, summary, draft response, and maintenance ticket suggestion. All outputs require your approval before any action.',
+                desc: 'Every message — WhatsApp, call transcript, or manual entry — gets AI triage: category, urgency, draft response, and maintenance ticket suggestion. Human approval always required.',
               },
               {
                 icon: '🏢',
                 title: 'Portfolio Management',
-                desc: 'Manage properties, units, tenants, and leases in one place. UAE-ready with AED currency, emirate fields, and RERA-aware prompts.',
+                desc: 'Manage properties, units, tenants, and leases in one place. UAE-ready with AED currency, emirate fields, and RERA-aware AI prompts.',
               },
               {
-                icon: '🔧',
-                title: 'Maintenance Tracking',
-                desc: 'Create tickets from AI suggestions or manually. Track status from New → Assigned → Completed. Activity timeline per ticket.',
-              },
-              {
-                icon: '📄',
-                title: 'Lease Overview',
-                desc: 'Track active, expiring, and past leases. Never miss a renewal. Get flagged when leases approach expiry.',
+                icon: '👥',
+                title: 'Contacts & Leads',
+                desc: 'Manage buyers, sellers, and prospects alongside your tenants. Track every conversation and know who is hot, warm, or cold.',
               },
               {
                 icon: '🔒',
                 title: 'Human-in-the-Loop',
-                desc: 'AI never sends messages automatically. Every draft response and suggested action requires explicit human approval. Always.',
-              },
-              {
-                icon: '🌐',
-                title: 'Multi-Channel Ready',
-                desc: 'Built for web dashboard now. Architecture ready for WhatsApp, ChatGPT Custom GPT, and SMS — without changing your AI or data layer.',
+                desc: 'AI never sends messages or takes actions automatically. Every reply and ticket requires your explicit approval. You stay in control — always.',
               },
             ].map((f) => (
               <div key={f.title} className="bg-white rounded-xl border border-gray-200 p-6">
@@ -130,28 +138,68 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* AI Providers */}
-      <section className="max-w-6xl mx-auto px-6 py-16 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Provider-agnostic AI — your keys, your choice</h2>
-        <p className="text-gray-500 mb-8">Connect OpenAI, Anthropic Claude, or Google Gemini. No key? Demo mode works out of the box.</p>
-        <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600">
-          {['OpenAI GPT-4o-mini', 'Anthropic Claude Haiku', 'Google Gemini Flash', 'Demo Mode (no key)'].map((p) => (
-            <div key={p} className="flex items-center gap-2">
-              <span className="text-green-500">✓</span> {p}
+      {/* Integration setup */}
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <h2 className="text-2xl font-bold text-gray-900 text-center mb-4">Connect your channels in minutes</h2>
+        <p className="text-gray-500 text-center mb-10 max-w-xl mx-auto">HomeFlow integrates with WhatsApp Business API and Twilio for phone calls. Add your credentials once and everything flows in.</p>
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          <div className="bg-green-50 rounded-xl border border-green-200 p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-lg">📱</div>
+              <div>
+                <p className="font-semibold text-gray-900">WhatsApp Business API</p>
+                <p className="text-xs text-gray-500">Meta Business Platform</p>
+              </div>
             </div>
-          ))}
+            <ul className="text-sm text-gray-600 space-y-2">
+              <li className="flex items-start gap-2"><span className="text-green-500 mt-0.5">✓</span> Receive messages via webhook</li>
+              <li className="flex items-start gap-2"><span className="text-green-500 mt-0.5">✓</span> Send replies with human approval</li>
+              <li className="flex items-start gap-2"><span className="text-green-500 mt-0.5">✓</span> Media, documents, voice notes</li>
+              <li className="flex items-start gap-2"><span className="text-green-500 mt-0.5">✓</span> Thread all tenant conversations</li>
+            </ul>
+          </div>
+          <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white text-lg">📞</div>
+              <div>
+                <p className="font-semibold text-gray-900">Twilio Voice</p>
+                <p className="text-xs text-gray-500">Inbound + outbound calls</p>
+              </div>
+            </div>
+            <ul className="text-sm text-gray-600 space-y-2">
+              <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">✓</span> Inbound call routing & recording</li>
+              <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">✓</span> AI-powered transcription</li>
+              <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">✓</span> Auto-summary + action items</li>
+              <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">✓</span> Call log tied to contacts</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Providers */}
+      <section className="bg-gray-50 border-t border-gray-100 py-12 text-center">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-3">Provider-agnostic AI — your keys, your choice</h2>
+          <p className="text-gray-500 mb-6 text-sm">Connect OpenAI, Anthropic Claude, or Google Gemini. No key? Demo mode works out of the box.</p>
+          <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600">
+            {['OpenAI GPT-4o-mini', 'Anthropic Claude Haiku', 'Google Gemini Flash', 'Demo Mode (no key)'].map((p) => (
+              <div key={p} className="flex items-center gap-2">
+                <span className="text-green-500">✓</span> {p}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="bg-blue-600 py-16 text-center text-white">
-        <h2 className="text-3xl font-bold mb-4">Ready to see it in action?</h2>
-        <p className="text-blue-100 mb-8 max-w-lg mx-auto">Demo data is pre-loaded with UAE residential properties, tenants, and maintenance tickets. No setup needed.</p>
+      <section className="bg-emerald-600 py-16 text-center text-white">
+        <h2 className="text-3xl font-bold mb-4">Ready to see HomeFlow in action?</h2>
+        <p className="text-emerald-100 mb-8 max-w-lg mx-auto">Demo data pre-loaded with UAE properties, tenants, WhatsApp conversations, and call logs. No setup needed.</p>
         <Link
           href="/dashboard"
-          className="bg-white text-blue-600 font-semibold px-8 py-4 rounded-xl hover:bg-blue-50 transition-colors text-lg inline-block"
+          className="bg-white text-emerald-600 font-semibold px-8 py-4 rounded-xl hover:bg-emerald-50 transition-colors text-lg inline-block"
         >
-          Launch Demo Dashboard →
+          Open Platform →
         </Link>
       </section>
 
@@ -159,11 +207,11 @@ export default function LandingPage() {
       <footer className="border-t border-gray-100 py-8 px-6 text-center">
         <div className="max-w-4xl mx-auto">
           <p className="text-xs text-gray-400 leading-relaxed">
-            <strong>Disclaimer:</strong> Property Copilot is a PoC/MVP demonstration tool and does not provide legal, tax, financial, regulatory, or real-estate compliance advice.
+            <strong>Disclaimer:</strong> HomeFlow is a demonstration platform and does not provide legal, tax, financial, regulatory, or real-estate compliance advice.
             AI outputs are suggestions only and require human review and approval before any action is taken.
             For UAE tenancy law, RERA regulations, and compliance matters, consult a qualified professional.
           </p>
-          <p className="text-xs text-gray-400 mt-2">© 2025 Property Copilot · MVP/PoC · UAE Residential Real Estate</p>
+          <p className="text-xs text-gray-400 mt-2">© 2026 HomeFlow · UAE Residential Real Estate Platform</p>
         </div>
       </footer>
     </div>
